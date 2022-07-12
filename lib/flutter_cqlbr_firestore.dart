@@ -8,5 +8,3 @@ export 'src/cqlbr.select.firestore.dart';
 export 'src/cqlbr.serialize.firestore.dart';
 export 'src/cqlbr.update.firestore.dart';
 export 'src/cqlbr.where.firestore.dart';
-
-void main(List<String> args) {}

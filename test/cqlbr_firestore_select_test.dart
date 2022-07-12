@@ -7,23 +7,26 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   // Fake Cloud Firestore
   final instance1 = FakeFirebaseFirestore();
+
   await instance1.collection('users').doc('1').set(
     {
-      'username': 'Bob',
-      'email': 'isaquesp@gmail.com',
+      'username': 'Bob 1',
+      'email': 'bob1@gmail.com',
     },
   );
-  // CQLBr
+
   await instance1.collection('users').doc('2').set(
     {
-      'username': 'Bob',
-      'email': 'isaquesp@gmail.com',
+      'username': 'Bob 2',
+      'email': 'bob2@gmail.com',
     },
   );
+
+  // CQLBr
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestSelect_CollectionFirestore',
+    'Test_Select_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -39,14 +42,11 @@ void main() async {
 
       expect(snapshot1.docs.first.data().toString(),
           snapshot2.docs.first.data().toString());
-
-      // debugPrint('Fake ${snapshot1.docs.first.data().toString()}');
-      // debugPrint('CQLBr ${snapshot2.docs.first.data().toString()}');
     },
   );
 
   test(
-    'TestSelectWhere_CollectionFirestore',
+    'Test_Select_Where_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -56,23 +56,20 @@ void main() async {
           .all$()
           .from$('users')
           .where$('username')
-          .equal$('Bob')
+          .equal$('Bob 1')
           .asResult();
       QuerySnapshot snapshot1 = await result.get();
 
       // Fake Cloud Firestore
       QuerySnapshot snapshot2 = await instance1
           .collection('users')
-          .where('username', isEqualTo: 'Bob')
+          .where('username', isEqualTo: 'Bob 1')
           .get();
 
       await batch.commit();
 
       expect(snapshot1.docs.first.data().toString(),
           snapshot2.docs.first.data().toString());
-
-      // debugPrint('Fake ${snapshot1.docs.first.data().toString()}');
-      // debugPrint('CQLBr ${snapshot2.docs.first.data().toString()}');
     },
   );
 }

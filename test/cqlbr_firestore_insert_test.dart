@@ -7,23 +7,12 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   // Fake Cloud Firestore
   final instance1 = FakeFirebaseFirestore();
-  await instance1.collection('users').doc('1').set(
-    {
-      'username': '= Bob',
-      'email': 'bob@gmail.com',
-    },
-  );
+
   // CQLBr
-  await instance1.collection('users').doc('2').set(
-    {
-      'username': '= Bob',
-      'email': 'bob@gmail.com',
-    },
-  );
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestInsertWhere_CollectionFirestore',
+    'Test_Insert_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -32,8 +21,8 @@ void main() async {
       CollectionReference result = cqlbr
           .insert$()
           .into$('users')
-          .values$('username', 'Isaque Pinheiro')
-          .values$('email', 'isaque@gmail.com')
+          .values$('username', 'Bob 1')
+          .values$('email', 'bob1@gmail.com')
           .asResult();
       await result
           .add((cqlbr.ast.insert() as CQLInsertFirestore).toMap())
@@ -41,10 +30,10 @@ void main() async {
 
       bool result2 = false;
       // Fake Cloud Firestore
-      await instance1.collection('users').add({
-        "username": "= Isaque Pinheiro",
-        "email": "isaque@gmail.com"
-      }).then((value) => result2 = true);
+      await instance1
+          .collection('users')
+          .add({"username": "Bob 2", "email": "bob2@gmail.com"}).then(
+              (value) => result2 = true);
 
       await batch.commit();
 

@@ -7,23 +7,26 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   // Fake Cloud Firestore
   final instance1 = FakeFirebaseFirestore();
+
   await instance1.collection('users').doc('1').set(
     {
-      'username': 'Bob',
-      'email': 'bob@gmail.com',
+      'username': 'Bob 1',
+      'email': 'bob1@gmail.com',
     },
   );
-  // CQLBr
+
   await instance1.collection('users').doc('2').set(
     {
-      'username': 'Isaque Pinheiro',
-      'email': 'isaquesp@gmail.com',
+      'username': 'Bob 2',
+      'email': 'bob2@gmail.com',
     },
   );
+
+  // CQLBr
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestUpdateWhere_CollectionFirestore',
+    'Test_Update_Where_FirebaseFirestore',
     () async {
       // Vários testes de operações no banco de dados,
       // devem estar cobertos por uma trasação.
@@ -33,9 +36,9 @@ void main() async {
       // CQLBr
       Query result = cqlbr
           .update$('users')
-          .set$('username', 'Isaque')
+          .set$('username', 'Bob de Esponja')
           .where$('email')
-          .equal$('isaquesp@gmail.com')
+          .equal$('bob1@gmail.com')
           .asResult();
       await result.get().then(
         (list) {
@@ -52,13 +55,13 @@ void main() async {
       // Fake Cloud Firestore
       await instance1
           .collection('users')
-          .where('email', isEqualTo: 'bob@gmail.com')
+          .where('email', isEqualTo: 'bob2@gmail.com')
           .get()
           .then(
         (list) {
           for (var doc in list.docs) {
             doc.reference
-                .update({'username': 'Bob Esponja'})
+                .update({'username': 'Bob Esponjas'})
                 .then((value) => result2 = true)
                 .onError((error, stackTrace) => result2 = false);
           }

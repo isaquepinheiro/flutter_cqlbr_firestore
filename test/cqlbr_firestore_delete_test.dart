@@ -7,22 +7,26 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   // Fake Cloud Firestore
   final instance1 = FakeFirebaseFirestore();
+
   await instance1.collection('users').doc().set(
     {
-      'username': 'Bob',
-      'email': 'bob@gmail.com',
+      'username': 'Bob 1',
+      'email': 'bob1@gmail.com',
     },
   );
+
   await instance1.collection('users').doc('2').set(
     {
-      'username': 'Isaque',
-      'email': 'isaque@gmail.com',
+      'username': 'Bob 2',
+      'email': 'bob2@gmail.com',
     },
   );
+
+  // CQLBr
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestDelete_CollectionFirestore',
+    'Test_Delete_All_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -51,7 +55,7 @@ void main() async {
   );
 
   test(
-    'TestDeleteWhere_CollectionFirestore',
+    'Test_Delete_Where_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -61,8 +65,8 @@ void main() async {
           .delete$()
           .from$('users')
           .where$('email')
-          .equal$('isaque@gmail.com')
-          .asResult<Query>();
+          .equal$('bob1@gmail.com')
+          .asResult();
 
       await result.get().then(
         (list) {
@@ -78,7 +82,7 @@ void main() async {
       // Fake Cloud Firestore
       Query resultFake = instance1
           .collection('users')
-          .where('email', isEqualTo: 'bob@gmail.com');
+          .where('email', isEqualTo: 'bob2@gmail.com');
 
       await resultFake.get().then(
         (list) {
