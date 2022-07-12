@@ -6,7 +6,7 @@ Durante o desenvolvimento de software, é evidente a preocupação em que se tem
 
 ## Flutter CLQBr Firestore
 
-![flutter cqlbr firestore]<img src="https://www.isaquepinheiro.com.br/projetos/cqlbr-framework-for-delphilazarus-65199.png" width="1280" height="500">
+<img src="https://www.isaquepinheiro.com.br/projetos/cqlbr-framework-for-delphilazarus-65199.png" width="1280" height="500">
 
 ## COMO COMEÇAR A USAR
 
