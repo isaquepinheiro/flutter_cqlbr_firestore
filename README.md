@@ -15,21 +15,79 @@ TODO: Ao instâncias o CQL, deve-se injetar a ele o nodelo do banco que se vai u
 ## SELECT
 
 ```dart
-  Expect : "SELECT ID_CLIENTE, NOME_CLIENTE, (CASE TIPO_CLIENTE WHEN 0 THEN 'FISICA' WHEN 1 THEN 'JURIDICA' ELSE 'PRODUTOR' END) AS TIPO_PESSOA FROM CLIENTES");
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:flutter_cqlbr_core/flutter_cqlbr_core.dart';
+import 'package:flutter_cqlbr_firestore/flutter_cqlbr_firestore.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-  String result = cqlbr
-        .select$()
-          .column$('ID_CLIENTE')
-          .column$('NOME_CLIENTE')
-          .column$('TIPO_CLIENTE')
-          .case$(null)
-            .when$('0').then$(Fun.q('FISICA'))
-            .when$('1').then$(Fun.q('JURIDICA'))
-                       .else$(Fun.q('PRODUTOR'))
-          .end$()
-        .as$('TIPO_PESSOA')
-        .from$('CLIENTES')
-    .asString();
+void main() async {
+  // Fake Cloud Firestore
+  final instance1 = FakeFirebaseFirestore();
+
+  await instance1.collection('users').doc('1').set(
+    {
+      'username': 'Bob',
+      'email': 'isaquesp@gmail.com',
+    },
+  );
+  // CQLBr
+  await instance1.collection('users').doc('2').set(
+    {
+      'username': 'Bob',
+      'email': 'isaquesp@gmail.com',
+    },
+  );
+  CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
+
+  test(
+    'TestSelect_CollectionFirestore',
+    () async {
+      final batch = instance1.batch();
+
+      // CQLBr
+      CollectionReference result =
+          cqlbr.select$().all$().from$('users').asResult();
+      QuerySnapshot snapshot1 = await result.get();
+
+      // Fake Cloud Firestore
+      QuerySnapshot snapshot2 = await instance1.collection('users').get();
+
+      await batch.commit();
+
+      expect(snapshot1.docs.first.data().toString(),
+          snapshot2.docs.first.data().toString());
+    },
+  );
+
+  test(
+    'TestSelectWhere_CollectionFirestore',
+    () async {
+      final batch = instance1.batch();
+
+      // CQLBr
+      Query result = cqlbr
+          .select$()
+          .all$()
+          .from$('users')
+          .where$('username')
+          .equal$('Bob')
+          .asResult();
+      QuerySnapshot snapshot1 = await result.get();
+
+      // Fake Cloud Firestore
+      QuerySnapshot snapshot2 = await instance1
+          .collection('users')
+          .where('username', isEqualTo: 'Bob')
+          .get();
+
+      await batch.commit();
+
+      expect(snapshot1.docs.first.data().toString(),
+          snapshot2.docs.first.data().toString());
+    },
+  );
+}
 ```
 
 ## INSERT
