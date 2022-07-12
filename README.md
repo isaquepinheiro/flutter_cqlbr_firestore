@@ -27,15 +27,15 @@ void main() async {
 
   await instance1.collection('users').doc('1').set(
     {
-      'username': 'Bob',
-      'email': 'isaquesp@gmail.com',
+      'username': 'Bob 1',
+      'email': 'bob1@gmail.com',
     },
   );
 
   await instance1.collection('users').doc('2').set(
     {
-      'username': 'Bob',
-      'email': 'isaquesp@gmail.com',
+      'username': 'Bob 2',
+      'email': 'bob2@gmail.com',
     },
   );
 
@@ -43,7 +43,7 @@ void main() async {
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestSelect_CollectionFirestore',
+    'Test_Select_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -63,7 +63,7 @@ void main() async {
   );
 
   test(
-    'TestSelectWhere_CollectionFirestore',
+    'Test_Select_Where_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -73,14 +73,14 @@ void main() async {
           .all$()
           .from$('users')
           .where$('username')
-          .equal$('Bob')
+          .equal$('Bob 1')
           .asResult();
       QuerySnapshot snapshot1 = await result.get();
 
       // Fake Cloud Firestore
       QuerySnapshot snapshot2 = await instance1
           .collection('users')
-          .where('username', isEqualTo: 'Bob')
+          .where('username', isEqualTo: 'Bob 1')
           .get();
 
       await batch.commit();
@@ -104,25 +104,12 @@ import 'package:flutter_test/flutter_test.dart';
 void main() async {
   // Fake Cloud Firestore
   final instance1 = FakeFirebaseFirestore();
-  await instance1.collection('users').doc('1').set(
-    {
-      'username': '= Bob',
-      'email': 'bob@gmail.com',
-    },
-  );
-
-  await instance1.collection('users').doc('2').set(
-    {
-      'username': '= Bob',
-      'email': 'bob@gmail.com',
-    },
-  );
 
   // CQLBr
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestInsertWhere_CollectionFirestore',
+    'Test_Insert_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -131,8 +118,8 @@ void main() async {
       CollectionReference result = cqlbr
           .insert$()
           .into$('users')
-          .values$('username', 'Isaque Pinheiro')
-          .values$('email', 'isaque@gmail.com')
+          .values$('username', 'Bob 1')
+          .values$('email', 'bob1@gmail.com')
           .asResult();
       await result
           .add((cqlbr.ast.insert() as CQLInsertFirestore).toMap())
@@ -140,10 +127,10 @@ void main() async {
 
       bool result2 = false;
       // Fake Cloud Firestore
-      await instance1.collection('users').add({
-        "username": "= Isaque Pinheiro",
-        "email": "isaque@gmail.com"
-      }).then((value) => result2 = true);
+      await instance1
+          .collection('users')
+          .add({"username": "Bob 2", "email": "bob2@gmail.com"}).then(
+              (value) => result2 = true);
 
       await batch.commit();
 
@@ -168,15 +155,15 @@ void main() async {
 
   await instance1.collection('users').doc('1').set(
     {
-      'username': 'Bob',
-      'email': 'bob@gmail.com',
+      'username': 'Bob 1',
+      'email': 'bob1@gmail.com',
     },
   );
 
   await instance1.collection('users').doc('2').set(
     {
-      'username': 'Isaque Pinheiro',
-      'email': 'isaquesp@gmail.com',
+      'username': 'Bob 2',
+      'email': 'bob2@gmail.com',
     },
   );
 
@@ -184,7 +171,7 @@ void main() async {
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestUpdateWhere_CollectionFirestore',
+    'Test_Update_Where_FirebaseFirestore',
     () async {
       // Vários testes de operações no banco de dados,
       // devem estar cobertos por uma trasação.
@@ -194,9 +181,9 @@ void main() async {
       // CQLBr
       Query result = cqlbr
           .update$('users')
-          .set$('username', 'Isaque')
+          .set$('username', 'Bob de Esponja')
           .where$('email')
-          .equal$('isaquesp@gmail.com')
+          .equal$('bob1@gmail.com')
           .asResult();
       await result.get().then(
         (list) {
@@ -213,13 +200,13 @@ void main() async {
       // Fake Cloud Firestore
       await instance1
           .collection('users')
-          .where('email', isEqualTo: 'bob@gmail.com')
+          .where('email', isEqualTo: 'bob2@gmail.com')
           .get()
           .then(
         (list) {
           for (var doc in list.docs) {
             doc.reference
-                .update({'username': 'Bob Esponja'})
+                .update({'username': 'Bob Esponjas'})
                 .then((value) => result2 = true)
                 .onError((error, stackTrace) => result2 = false);
           }
@@ -249,15 +236,15 @@ void main() async {
 
   await instance1.collection('users').doc().set(
     {
-      'username': 'Bob',
-      'email': 'bob@gmail.com',
+      'username': 'Bob 1',
+      'email': 'bob1@gmail.com',
     },
   );
 
   await instance1.collection('users').doc('2').set(
     {
-      'username': 'Isaque',
-      'email': 'isaque@gmail.com',
+      'username': 'Bob 2',
+      'email': 'bob2@gmail.com',
     },
   );
 
@@ -265,7 +252,7 @@ void main() async {
   CQLBr cqlbr = CQLBr(select: CQLSelectFirestore(instance1));
 
   test(
-    'TestDelete_CollectionFirestore',
+    'Test_Delete_All_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -294,7 +281,7 @@ void main() async {
   );
 
   test(
-    'TestDeleteWhere_CollectionFirestore',
+    'Test_Delete_Where_FirebaseFirestore',
     () async {
       final batch = instance1.batch();
 
@@ -304,8 +291,8 @@ void main() async {
           .delete$()
           .from$('users')
           .where$('email')
-          .equal$('isaque@gmail.com')
-          .asResult<Query>();
+          .equal$('bob1@gmail.com')
+          .asResult();
 
       await result.get().then(
         (list) {
@@ -321,7 +308,7 @@ void main() async {
       // Fake Cloud Firestore
       Query resultFake = instance1
           .collection('users')
-          .where('email', isEqualTo: 'bob@gmail.com');
+          .where('email', isEqualTo: 'bob2@gmail.com');
 
       await resultFake.get().then(
         (list) {
