@@ -6,7 +6,7 @@ Durante o desenvolvimento de software, é evidente a preocupação em que se tem
 
 ## CQLBr Framework for Firestore
 
-![flutter_cqlbr_firestore](https://www.isaquepinheiro.com.br/projetos/cqlbr-framework-for-delphilazarus-65199.png)
+![flutter_cqlbr_firestore]<img src="https://www.isaquepinheiro.com.br/projetos/cqlbr-framework-for-delphilazarus-65199.png" width="1280" height="720">
 
 ## COMO COMEÇAR A USAR
 
@@ -14,7 +14,7 @@ Durante o desenvolvimento de software, é evidente a preocupação em que se tem
   CQLBr cqlbr = CQLBr(select: CQLSelectFirebird(FirebaseFirestore.instance));
 ```
 
-## Depnedência
+## Dependência
 
 - [CQLBr Framework for Dart/Flutter (Core)](https://github.com/isaquepinheiro/flutter_cqlbr_core)
 
